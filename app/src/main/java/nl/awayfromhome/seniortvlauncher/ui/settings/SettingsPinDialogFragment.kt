@@ -89,11 +89,6 @@ class SettingsPinDialogFragment : DialogFragment() {
             }
         }
 
-        binding.btnBack.setOnClickListener {
-            resetTimeout()
-            dismiss()
-        }
-
         binding.btnDelete.setOnClickListener {
             resetTimeout()
             if (enteredCode.isNotEmpty()) {
@@ -115,13 +110,22 @@ class SettingsPinDialogFragment : DialogFragment() {
 
     private fun verifyCode() {
         if (enteredCode == generatedCode) {
-            dismiss()
             val intent = android.content.Intent(requireContext(), SettingsActivity::class.java)
+            dismiss()
             startActivity(intent)
         } else {
             enteredCode = ""
             updateEnteredDisplay()
+            resetTimeout()
             Toast.makeText(requireContext(), getString(R.string.incorrect_code), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDismiss(dialog: android.content.DialogInterface) {
+        super.onDismiss(dialog)
+        val fragment = parentFragmentManager.findFragmentByTag("launcher_fragment")
+        if (fragment is nl.awayfromhome.seniortvlauncher.ui.launcher.LauncherFragment) {
+            fragment.focusFirstTile()
         }
     }
 
