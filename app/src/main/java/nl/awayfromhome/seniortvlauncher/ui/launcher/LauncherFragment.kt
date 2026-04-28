@@ -211,9 +211,7 @@ class LauncherFragment : Fragment() {
                 )
             }
         } else {
-            binding.root.setBackgroundColor(
-                ContextCompat.getColor(requireContext(), R.color.background_default)
-            )
+            binding.root.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_dot_pattern)
         }
     }
 
