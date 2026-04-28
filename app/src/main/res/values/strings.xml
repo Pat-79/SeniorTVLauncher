@@ -34,4 +34,8 @@
     <string name="timeout_hint">Closes automatically in %1$d seconds</string>
     <string name="click_sound">Click sound on tile focus</string>
     <string name="open_device_settings">Open device settings</string>
+    <string name="default_launcher_dialog_title">Set as Default Launcher</string>
+    <string name="default_launcher_dialog_message">Would you like to set Senior TV Launcher as the default home screen for this device?</string>
+    <string name="default_launcher_dialog_yes">Set as Default</string>
+    <string name="default_launcher_dialog_no">Not Now</string>
 </resources>

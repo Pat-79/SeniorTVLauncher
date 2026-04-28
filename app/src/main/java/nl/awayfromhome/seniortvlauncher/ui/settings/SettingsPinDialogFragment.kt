@@ -1,10 +1,12 @@
 package nl.awayfromhome.seniortvlauncher.ui.settings
 
+import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +43,39 @@ class SettingsPinDialogFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.Theme_SeniorTVLauncher_Dialog)
         generatedCode = String.format("%04d", (0..9999).random())
+    }
+
+    /**
+     * Return a custom Dialog that intercepts number key presses from the remote control
+     * (KEYCODE_0 – KEYCODE_9) so the user can enter digits without navigating to each
+     * on-screen button first.
+     */
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return object : Dialog(requireContext(), theme) {
+            override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+                if (event.action == KeyEvent.ACTION_DOWN) {
+                    val digit = event.keyCode - KeyEvent.KEYCODE_0
+                    if (digit in 0..9) {
+                        handleDirectDigit(digit.toString())
+                        return true
+                    }
+                }
+                return super.dispatchKeyEvent(event)
+            }
+        }
+    }
+
+    private fun handleDirectDigit(digit: String) {
+        resetTimeout()
+        if (enteredCode.length < 4) {
+            enteredCode += digit
+            _binding?.enteredCode?.text = enteredCode
+            if (enteredCode.length == 4 && enteredCode == generatedCode) {
+                val intent = Intent(requireContext(), SettingsActivity::class.java)
+                dismiss()
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onCreateView(
