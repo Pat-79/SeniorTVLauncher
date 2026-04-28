@@ -58,10 +58,11 @@ class LauncherFragment : Fragment() {
 
     fun focusFirstTile() {
         _binding?.appGrid?.post {
-            val firstFocusable = (0 until (binding.appGrid.childCount))
-                .map { binding.appGrid.getChildAt(it) }
+            val b = _binding ?: return@post
+            val firstFocusable = (0 until b.appGrid.childCount)
+                .map { b.appGrid.getChildAt(it) }
                 .firstOrNull { it.isFocusable && it.isEnabled }
-            firstFocusable?.requestFocus() ?: binding.settingsButton.requestFocus()
+            firstFocusable?.requestFocus() ?: b.settingsButton.requestFocus()
         }
     }
 
