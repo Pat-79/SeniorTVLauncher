@@ -251,8 +251,8 @@ class LauncherFragment : Fragment() {
             val gridW = grid.width - grid.paddingStart - grid.paddingEnd
             val gridH = grid.height - grid.paddingTop - grid.paddingBottom
             if (gridW > 0 && gridH > 0) {
-                // Subtract the ItemDecoration gap (on each side) so the view fills
-                // only the inner portion of each slot, leaving the gap space empty.
+                // Each cell has a gapPx decoration on both the left AND right (or top AND bottom),
+                // so the view itself must be narrower/shorter by 2 × gapPx per axis.
                 val cellW = (gridW / settings.columns - 2 * gapPx).coerceAtLeast(1)
                 val cellH = (gridH / settings.rows - 2 * gapPx).coerceAtLeast(1)
                 adapter.setCellSize(cellW, cellH)

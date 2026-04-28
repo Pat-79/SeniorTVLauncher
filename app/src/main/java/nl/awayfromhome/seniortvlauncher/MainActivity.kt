@@ -60,8 +60,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun isDefaultLauncher(): Boolean {
         val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-        val info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        return info?.activityInfo?.packageName == packageName
+        val defaultPackage: String? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager
+                .queryIntentActivities(
+                    intent,
+                    PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
+                )
+                .firstOrNull()
+                ?.activityInfo?.packageName
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+                ?.activityInfo?.packageName
+        }
+        return defaultPackage == packageName
     }
 
     private fun launchSetDefaultHome() {

@@ -67,14 +67,18 @@ class SettingsPinDialogFragment : DialogFragment() {
 
     private fun handleDirectDigit(digit: String) {
         resetTimeout()
-        if (enteredCode.length < 4) {
-            enteredCode += digit
-            _binding?.enteredCode?.text = enteredCode
-            if (enteredCode.length == 4 && enteredCode == generatedCode) {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                dismiss()
-                startActivity(intent)
-            }
+        appendDigit(digit)
+    }
+
+    /** Core digit-entry logic shared by on-screen buttons and direct remote key presses. */
+    private fun appendDigit(digit: String) {
+        if (enteredCode.length >= 4) return
+        enteredCode += digit
+        _binding?.enteredCode?.text = enteredCode
+        if (enteredCode.length == 4 && enteredCode == generatedCode) {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            dismiss()
+            startActivity(intent)
         }
     }
 
@@ -120,17 +124,7 @@ class SettingsPinDialogFragment : DialogFragment() {
         numButtons.forEachIndexed { _, button ->
             button.setOnClickListener {
                 resetTimeout()
-                if (enteredCode.length < 4) {
-                    enteredCode += (button.text as CharSequence).toString()
-                    updateEnteredDisplay()
-                    // Auto-accept when the 4th digit completes the correct code
-                    if (enteredCode.length == 4 && enteredCode == generatedCode) {
-                        val intent = Intent(requireContext(), SettingsActivity::class.java)
-                        dismiss()
-                        startActivity(intent)
-                    }
-                    // If 4th digit is wrong: do nothing – let the user retry or press OK
-                }
+                appendDigit((button.text as CharSequence).toString())
             }
         }
 
