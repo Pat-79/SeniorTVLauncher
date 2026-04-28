@@ -6,6 +6,10 @@
     <dimen name="settings_item_height">64dp</dimen>
     <dimen name="app_name_bottom_padding">4dp</dimen>
     <!-- Gap (on each side) between app-grid tiles.
-         Total space between two adjacent tiles = 2 × grid_gap. -->
-    <dimen name="grid_gap">8dp</dimen>
+         Total space between two adjacent tiles = 2 × grid_gap.
+         Kept at 16dp so the focus glow (which overflows ~12dp beyond each tile edge)
+         never reaches the neighbouring tile. -->
+    <dimen name="grid_gap">16dp</dimen>
+    <!-- How far the focus glow is allowed to bleed outside the tile's own bounds. -->
+    <dimen name="grid_glow_overflow">12dp</dimen>
 </resources>

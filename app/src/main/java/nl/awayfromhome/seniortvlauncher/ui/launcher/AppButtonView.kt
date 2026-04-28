@@ -1,5 +1,6 @@
 package nl.awayfromhome.seniortvlauncher.ui.launcher
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -10,6 +11,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,6 +37,17 @@ class AppButtonView @JvmOverloads constructor(
     private var isEmptySlot: Boolean = true
     private val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
+    /**
+     * Animation progress: 0 = fully unfocused, 1 = fully focused.
+     * Drives both the icon-container scale and the glow size/alpha together so
+     * both grow proportionally on every frame.
+     */
+    private var glowProgress: Float = 0f
+    private var currentAnimator: ValueAnimator? = null
+
+    /** How far (px) the glow bleeds outside the tile's own bounds when fully focused. */
+    private var glowOverflowPx: Float = 0f
+
     init {
         LayoutInflater.from(context).inflate(R.layout.item_app_button, this, true)
         iconContainer = findViewById(R.id.icon_container)
@@ -46,6 +59,27 @@ class AppButtonView @JvmOverloads constructor(
         isClickable = true
         descendantFocusability = FOCUS_BLOCK_DESCENDANTS
         setWillNotDraw(false)
+    }
+
+    /** Cached half-width/-height, kept in sync via [onSizeChanged] to avoid recalculation in [onDraw]. */
+    private var tileCx: Float = 0f
+    private var tileCy: Float = 0f
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        tileCx = w / 2f
+        tileCy = h / 2f
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        glowOverflowPx = resources.getDimension(R.dimen.grid_glow_overflow)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        currentAnimator?.cancel()
+        currentAnimator = null
     }
 
     fun bindApp(appInfo: AppInfo, showName: Boolean, shape: ButtonShape) {
@@ -78,27 +112,36 @@ class AppButtonView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val STROKE_WIDTH_FOCUSED = 8
-        private const val STROKE_WIDTH_DEFAULT = 3
+        /** Thin, subtle stroke shown on unfocused tiles – not bright. */
+        private const val STROKE_WIDTH_UNFOCUSED = 2
+        /** Maximum icon-container scale when the tile is fully focused. */
+        private const val MAX_ICON_SCALE = 1.05f
+        private const val ANIM_DURATION_MS = 150L
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (isFocused && !isEmptySlot && width > 0 && height > 0) {
-            val cx = width / 2f
-            val cy = height / 2f
-            val radius = sqrt((cx * cx) + (cy * cy))
+        if (!isEmptySlot && glowProgress > 0f && width > 0 && height > 0) {
+            val overflow = glowOverflowPx * glowProgress
+            // Distance from the gradient center to the corner of the expanded glow rect.
+            val expandedHalfW = tileCx + overflow
+            val expandedHalfH = tileCy + overflow
+            val radius = sqrt(expandedHalfW * expandedHalfW + expandedHalfH * expandedHalfH)
+            val innerGlowAlpha = (160 * glowProgress).toInt()
+            val outerGlowAlpha = (70 * glowProgress).toInt()
             val shader = RadialGradient(
-                cx, cy, radius,
+                tileCx, tileCy, radius,
                 intArrayOf(
-                    ColorUtils.withAlpha(dominantColor, 180),
-                    ColorUtils.withAlpha(dominantColor, 80),
+                    ColorUtils.withAlpha(dominantColor, innerGlowAlpha),
+                    ColorUtils.withAlpha(dominantColor, outerGlowAlpha),
                     Color.TRANSPARENT
                 ),
                 floatArrayOf(0.15f, 0.55f, 1.0f),
                 Shader.TileMode.CLAMP
             )
             glowPaint.shader = shader
-            canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), glowPaint)
+            // Draw the glow rect, extending beyond the tile's own bounds by `overflow`.
+            // Visible only because the parent RecyclerView has clipChildren = false.
+            canvas.drawRect(-overflow, -overflow, width + overflow, height + overflow, glowPaint)
         }
         super.onDraw(canvas)
     }
@@ -108,16 +151,20 @@ class AppButtonView @JvmOverloads constructor(
         val fillColor = when {
             isEmpty -> Color.argb(40, 255, 255, 255)
             isFocused -> ColorUtils.withAlpha(lightenColor(dominantColor, 30), 110)
-            else -> ColorUtils.withAlpha(dominantColor, 40)
+            // Increased alpha (70 vs 40) so the app's colour fills more of the tile area.
+            else -> ColorUtils.withAlpha(dominantColor, 70)
         }
+        // When focused: no stroke – the radial glow provides the visual boundary.
+        // When unfocused: very subtle stroke (muted, low-alpha) rather than the full accent.
         val strokeColor = when {
             isEmpty -> Color.argb(80, 255, 255, 255)
-            isFocused -> lightenColor(dominantColor, 80)
-            else -> dominantColor
+            isFocused -> Color.TRANSPARENT
+            else -> ColorUtils.withAlpha(dominantColor, 55)
         }
+        val strokeWidth = if (isFocused || isEmpty) 0 else STROKE_WIDTH_UNFOCUSED
 
         background.setColor(fillColor)
-        background.setStroke(if (isFocused) STROKE_WIDTH_FOCUSED else STROKE_WIDTH_DEFAULT, strokeColor)
+        background.setStroke(strokeWidth, strokeColor)
 
         when (shape) {
             ButtonShape.CIRCLE -> background.shape = GradientDrawable.OVAL
@@ -150,14 +197,24 @@ class AppButtonView @JvmOverloads constructor(
 
     fun setFocusedState(focused: Boolean, shape: ButtonShape) {
         isFocused = focused
-        // Scale only the icon container so the tile stays within its allocated cell bounds,
-        // preventing any overlap with neighbouring tiles.
-        if (focused) {
-            iconContainer.animate().scaleX(1.10f).scaleY(1.10f).setDuration(150).start()
-        } else {
-            iconContainer.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start()
+        val targetProgress = if (focused) 1f else 0f
+
+        currentAnimator?.cancel()
+        currentAnimator = ValueAnimator.ofFloat(glowProgress, targetProgress).apply {
+            duration = ANIM_DURATION_MS
+            interpolator = DecelerateInterpolator()
+            addUpdateListener { anim ->
+                glowProgress = anim.animatedValue as Float
+                // Scale icon container proportionally together with the glow.
+                val scale = 1f + glowProgress * (MAX_ICON_SCALE - 1f)
+                iconContainer.scaleX = scale
+                iconContainer.scaleY = scale
+                invalidate()
+            }
+            start()
         }
+
         applyShape(shape, isEmptySlot)
-        invalidate()
     }
 }
+
