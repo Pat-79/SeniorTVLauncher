@@ -121,6 +121,11 @@ class LauncherFragment : Fragment() {
         binding.appGrid.layoutManager = GridLayoutManager(requireContext(), 4)
         binding.appGrid.adapter = adapter
 
+        // Allow the focus glow to bleed outside each tile's bounds into the gap area.
+        // clipToPadding is already false in the XML; set clipChildren false here too.
+        binding.appGrid.clipChildren = false
+        (binding.appGrid.parent as? android.view.ViewGroup)?.clipChildren = false
+
         // Add uniform gap around every tile so tiles never touch each other or overlap when focused.
         val gapPx = resources.getDimensionPixelSize(R.dimen.grid_gap)
         binding.appGrid.addItemDecoration(GridSpacingDecoration(gapPx))
