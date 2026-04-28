@@ -60,6 +60,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Row 1: 1 2 3 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,14 +71,14 @@
                 android:background="@color/button_background" android:focusable="true"
                 android:focusableInTouchMode="true" android:focusedByDefault="true"
                 android:nextFocusRight="@id/btn2" android:nextFocusLeft="@id/btn3"
-                android:nextFocusDown="@id/btn4" android:nextFocusUp="@id/btn_backspace"
+                android:nextFocusDown="@id/btn4" android:nextFocusUp="@id/btn_back"
                 android:layout_margin="4dp"/>
             <Button android:id="@+id/btn2" android:layout_width="80dp" android:layout_height="80dp"
                 android:text="2" android:textSize="28sp" android:textColor="@color/text_primary"
                 android:background="@color/button_background" android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:nextFocusRight="@id/btn3" android:nextFocusLeft="@id/btn1"
-                android:nextFocusDown="@id/btn5" android:nextFocusUp="@id/btn0"
+                android:nextFocusDown="@id/btn5" android:nextFocusUp="@id/btn_delete"
                 android:layout_margin="4dp"/>
             <Button android:id="@+id/btn3" android:layout_width="80dp" android:layout_height="80dp"
                 android:text="3" android:textSize="28sp" android:textColor="@color/text_primary"
@@ -88,6 +89,7 @@
                 android:layout_margin="4dp"/>
         </LinearLayout>
 
+        <!-- Row 2: 4 5 6 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,6 +118,7 @@
                 android:layout_margin="4dp"/>
         </LinearLayout>
 
+        <!-- Row 3: 7 8 9 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -126,7 +129,7 @@
                 android:background="@color/button_background" android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:nextFocusRight="@id/btn8" android:nextFocusLeft="@id/btn9"
-                android:nextFocusDown="@id/btn_backspace" android:nextFocusUp="@id/btn4"
+                android:nextFocusDown="@id/btn0" android:nextFocusUp="@id/btn4"
                 android:layout_margin="4dp"/>
             <Button android:id="@+id/btn8" android:layout_width="80dp" android:layout_height="80dp"
                 android:text="8" android:textSize="28sp" android:textColor="@color/text_primary"
@@ -140,35 +143,51 @@
                 android:background="@color/button_background" android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:nextFocusRight="@id/btn7" android:nextFocusLeft="@id/btn8"
-                android:nextFocusDown="@id/btn_confirm" android:nextFocusUp="@id/btn6"
+                android:nextFocusDown="@id/btn0" android:nextFocusUp="@id/btn6"
                 android:layout_margin="4dp"/>
         </LinearLayout>
 
+        <!-- Row 4: 0 (centred) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
-            <Button android:id="@+id/btn_backspace" android:layout_width="80dp" android:layout_height="80dp"
-                android:text="⌫" android:textSize="24sp" android:textColor="@color/text_primary"
-                android:background="@color/button_background" android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:nextFocusRight="@id/btn0" android:nextFocusLeft="@id/btn_confirm"
-                android:nextFocusDown="@id/btn1" android:nextFocusUp="@id/btn7"
-                android:layout_margin="4dp"/>
             <Button android:id="@+id/btn0" android:layout_width="80dp" android:layout_height="80dp"
                 android:text="0" android:textSize="28sp" android:textColor="@color/text_primary"
                 android:background="@color/button_background" android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:nextFocusRight="@id/btn_confirm" android:nextFocusLeft="@id/btn_backspace"
-                android:nextFocusDown="@id/btn2" android:nextFocusUp="@id/btn8"
+                android:nextFocusRight="@id/btn0" android:nextFocusLeft="@id/btn0"
+                android:nextFocusDown="@id/btn_back" android:nextFocusUp="@id/btn8"
                 android:layout_margin="4dp"/>
-            <Button android:id="@+id/btn_confirm" android:layout_width="80dp" android:layout_height="80dp"
-                android:text="✓" android:textSize="28sp" android:textColor="@color/text_primary"
-                android:background="@color/accent" android:focusable="true"
+        </LinearLayout>
+
+        <!-- Row 5: Back | Delete | Confirm -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <Button android:id="@+id/btn_back" android:layout_width="100dp" android:layout_height="80dp"
+                android:text="✕ Back" android:textSize="20sp" android:textColor="@color/text_primary"
+                android:background="@color/btn_back_background" android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:nextFocusRight="@id/btn_backspace" android:nextFocusLeft="@id/btn0"
-                android:nextFocusDown="@id/btn3" android:nextFocusUp="@id/btn9"
+                android:nextFocusRight="@id/btn_delete" android:nextFocusLeft="@id/btn_confirm"
+                android:nextFocusDown="@id/btn1" android:nextFocusUp="@id/btn0"
+                android:layout_margin="4dp"/>
+            <Button android:id="@+id/btn_delete" android:layout_width="100dp" android:layout_height="80dp"
+                android:text="⌫ Delete" android:textSize="20sp" android:textColor="@color/text_primary"
+                android:background="@color/btn_delete_background" android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusRight="@id/btn_confirm" android:nextFocusLeft="@id/btn_back"
+                android:nextFocusDown="@id/btn2" android:nextFocusUp="@id/btn0"
+                android:layout_margin="4dp"/>
+            <Button android:id="@+id/btn_confirm" android:layout_width="100dp" android:layout_height="80dp"
+                android:text="✓ OK" android:textSize="20sp" android:textColor="@color/text_primary"
+                android:background="@color/btn_confirm_background" android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusRight="@id/btn_back" android:nextFocusLeft="@id/btn_delete"
+                android:nextFocusDown="@id/btn3" android:nextFocusUp="@id/btn0"
                 android:layout_margin="4dp"/>
         </LinearLayout>
 

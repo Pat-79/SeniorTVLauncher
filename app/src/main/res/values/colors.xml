@@ -6,4 +6,7 @@
     <color name="text_secondary">#AAAAAA</color>
     <color name="button_background">#16213E</color>
     <color name="settings_background">#0F3460</color>
+    <color name="btn_back_background">#8B0000</color>
+    <color name="btn_delete_background">#CC6600</color>
+    <color name="btn_confirm_background">#2E7D32</color>
 </resources>
