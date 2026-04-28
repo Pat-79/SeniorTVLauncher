@@ -1,13 +1,9 @@
 package nl.awayfromhome.seniortvlauncher.ui.settings
 
-import android.app.Dialog
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import nl.awayfromhome.seniortvlauncher.R
@@ -24,7 +20,7 @@ class SettingsPinDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.Theme_SeniorTVLauncher_Dialog)
-        generatedCode = (1000..9999).random().toString()
+        generatedCode = String.format("%04d", (0..9999).random())
     }
 
     override fun onCreateView(
@@ -52,10 +48,10 @@ class SettingsPinDialogFragment : DialogFragment() {
             binding.btn8, binding.btn9
         )
 
-        numButtons.forEachIndexed { index, button ->
+        numButtons.forEachIndexed { _, button ->
             button.setOnClickListener {
                 if (enteredCode.length < 4) {
-                    enteredCode += index.toString()
+                    enteredCode += (button.text as CharSequence).toString()
                     updateEnteredDisplay()
                 }
             }

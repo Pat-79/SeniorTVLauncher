@@ -1,9 +1,7 @@
 package nl.awayfromhome.seniortvlauncher.utils
 
 import android.content.Context
-import android.provider.Settings
 import android.text.format.DateFormat
-import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 

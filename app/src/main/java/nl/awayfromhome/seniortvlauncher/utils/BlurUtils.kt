@@ -57,7 +57,7 @@ object BlurUtils {
         var p: Int
         var yp: Int
         var yi: Int
-        val vmin = IntArray(Math.max(w, h))
+        val vmin = IntArray(maxOf(w, h))
 
         var divSum = (div + 1) shr 1
         divSum *= divSum
@@ -98,12 +98,12 @@ object BlurUtils {
 
             i = -radius
             while (i <= radius) {
-                p = pix[yi + Math.min(wm, Math.max(i, 0))]
+                p = pix[yi + minOf(wm, maxOf(i, 0))]
                 sir = stack[i + radius]
                 sir[0] = p and 0xff0000 shr 16
                 sir[1] = p and 0x00ff00 shr 8
                 sir[2] = p and 0x0000ff
-                rbs = r1 - Math.abs(i)
+                rbs = r1 - kotlin.math.abs(i)
                 rSum += sir[0] * rbs
                 gSum += sir[1] * rbs
                 bSum += sir[2] * rbs
@@ -133,7 +133,7 @@ object BlurUtils {
                 routSum -= sir[0]
                 goutSum -= sir[1]
                 boutSum -= sir[2]
-                if (y == 0) vmin[x] = Math.min(x + radius + 1, wm)
+                if (y == 0) vmin[x] = minOf(x + radius + 1, wm)
                 p = pix[yw + vmin[x]]
                 sir[0] = p and 0xff0000 shr 16
                 sir[1] = p and 0x00ff00 shr 8
@@ -173,12 +173,12 @@ object BlurUtils {
             yp = -radius * w
             i = -radius
             while (i <= radius) {
-                yi = Math.max(0, yp) + x
+                yi = maxOf(0, yp) + x
                 sir = stack[i + radius]
                 sir[0] = r[yi]
                 sir[1] = g[yi]
                 sir[2] = b[yi]
-                rbs = r1 - Math.abs(i)
+                rbs = r1 - kotlin.math.abs(i)
                 rSum += r[yi] * rbs
                 gSum += g[yi] * rbs
                 bSum += b[yi] * rbs
@@ -207,7 +207,7 @@ object BlurUtils {
                 routSum -= sir[0]
                 goutSum -= sir[1]
                 boutSum -= sir[2]
-                if (x == 0) vmin[y] = Math.min(y + r1, hm) * w
+                if (x == 0) vmin[y] = minOf(y + r1, hm) * w
                 p = x + vmin[y]
                 sir[0] = r[p]
                 sir[1] = g[p]

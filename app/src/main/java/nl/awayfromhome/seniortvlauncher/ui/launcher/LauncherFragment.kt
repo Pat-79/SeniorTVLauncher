@@ -67,6 +67,8 @@ class LauncherFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         dateHandler.removeCallbacks(dateRunnable)
+        settingsHoldRunnable?.let { settingsHoldHandler.removeCallbacks(it) }
+        settingsHoldRunnable = null
     }
 
     private fun setupAdapter() {
@@ -82,10 +84,47 @@ class LauncherFragment : Fragment() {
         binding.appGrid.adapter = adapter
     }
 
+    private val settingsHoldHandler = Handler(Looper.getMainLooper())
+    private var settingsHoldRunnable: Runnable? = null
+
     private fun setupSettingsButton() {
-        binding.settingsButton.setOnLongClickListener {
-            showPinDialog()
-            true
+        binding.settingsButton.setOnTouchListener { _, event ->
+            when (event.action) {
+                android.view.MotionEvent.ACTION_DOWN -> {
+                    settingsHoldRunnable = Runnable { showPinDialog() }
+                    settingsHoldHandler.postDelayed(settingsHoldRunnable!!, 3000)
+                    true
+                }
+                android.view.MotionEvent.ACTION_UP,
+                android.view.MotionEvent.ACTION_CANCEL -> {
+                    settingsHoldRunnable?.let { settingsHoldHandler.removeCallbacks(it) }
+                    settingsHoldRunnable = null
+                    binding.settingsButton.performClick()
+                    true
+                }
+                else -> false
+            }
+        }
+        // Also support D-pad long press (KEY_DOWN held)
+        binding.settingsButton.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == android.view.KeyEvent.KEYCODE_DPAD_CENTER ||
+                keyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+                when (event.action) {
+                    android.view.KeyEvent.ACTION_DOWN -> {
+                        if (event.repeatCount == 0) {
+                            settingsHoldRunnable = Runnable { showPinDialog() }
+                            settingsHoldHandler.postDelayed(settingsHoldRunnable!!, 3000)
+                        }
+                        true
+                    }
+                    android.view.KeyEvent.ACTION_UP -> {
+                        settingsHoldRunnable?.let { settingsHoldHandler.removeCallbacks(it) }
+                        settingsHoldRunnable = null
+                        true
+                    }
+                    else -> false
+                }
+            } else false
         }
         binding.settingsButton.setOnFocusChangeListener { _, hasFocus ->
             binding.settingsButton.alpha = if (hasFocus) 1.0f else 0.6f
