@@ -30,7 +30,7 @@ class LauncherFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: LauncherViewModel by viewModels()
-    private lateinit var adapter: AppGridAdapter
+    private lateinit var adapter: ApGridAdapter
 
     private val dateHandler = Handler(Looper.getMainLooper())
     private val dateRunnable = object : Runnable {
