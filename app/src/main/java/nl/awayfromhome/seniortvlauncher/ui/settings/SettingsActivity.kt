@@ -3,6 +3,7 @@ package nl.awayfromhome.seniortvlauncher.ui.settings
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -171,6 +172,11 @@ class SettingsActivity : AppCompatActivity(), AppPickerDialogFragment.AppPickerL
         binding.switchShowDate.setOnCheckedChangeListener { _, checked ->
             viewModel.updateSettings(viewModel.getCurrentSettings().copy(showDate = checked))
         }
+
+        binding.switchClickSound.isChecked = s.clickSoundEnabled
+        binding.switchClickSound.setOnCheckedChangeListener { _, checked ->
+            viewModel.updateSettings(viewModel.getCurrentSettings().copy(clickSoundEnabled = checked))
+        }
     }
 
     private fun refreshAppSlots() {
@@ -270,6 +276,9 @@ class SettingsActivity : AppCompatActivity(), AppPickerDialogFragment.AppPickerL
     }
 
     private fun setupSaveButton() {
+        binding.btnOpenDeviceSettings.setOnClickListener {
+            startActivity(Intent(Settings.ACTION_SETTINGS))
+        }
         binding.btnSave.setOnClickListener {
             viewModel.saveSettings()
             Toast.makeText(this, getString(R.string.settings_saved), Toast.LENGTH_SHORT).show()

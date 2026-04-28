@@ -1,6 +1,7 @@
 package nl.awayfromhome.seniortvlauncher.ui.launcher
 
 import android.util.TypedValue
+import android.view.SoundEffectConstants
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import nl.awayfromhome.seniortvlauncher.data.AppInfo
@@ -10,7 +11,8 @@ import nl.awayfromhome.seniortvlauncher.data.LauncherSettings
 class AppGridAdapter(
     private val onAppClick: (AppInfo) -> Unit,
     private val onEmptySlotClick: (Int) -> Unit,
-    private val onAppFocused: ((AppInfo?) -> Unit)? = null
+    private val onAppFocused: ((AppInfo?) -> Unit)? = null,
+    private val onAppFocusedPosition: ((Int) -> Unit)? = null
 ) : RecyclerView.Adapter<AppGridAdapter.AppButtonViewHolder>() {
 
     private var settings: LauncherSettings = LauncherSettings()
@@ -35,14 +37,14 @@ class AppGridAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppButtonViewHolder {
-        val sizePx = TypedValue.applyDimension(
+        val heightPx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             settings.buttonSizeDp.toFloat(),
             parent.context.resources.displayMetrics
         ).toInt()
 
         val view = AppButtonView(parent.context)
-        val lp = ViewGroup.LayoutParams(sizePx, sizePx)
+        val lp = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightPx)
         view.layoutParams = lp
 
         return AppButtonViewHolder(view)
@@ -64,6 +66,13 @@ class AppGridAdapter(
             buttonView.setFocusedState(hasFocus, settings.buttonShape)
             if (hasFocus && appInfo != null) {
                 onAppFocused?.invoke(appInfo)
+                val pos = holder.adapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onAppFocusedPosition?.invoke(pos)
+                }
+                if (settings.clickSoundEnabled) {
+                    buttonView.playSoundEffect(SoundEffectConstants.CLICK)
+                }
             } else {
                 onAppFocused?.invoke(null)
             }

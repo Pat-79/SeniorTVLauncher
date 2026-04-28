@@ -107,8 +107,7 @@ class SettingsPinDialogFragment : DialogFragment() {
     }
 
     private fun updateEnteredDisplay() {
-        val masked = "●".repeat(enteredCode.length) + "○".repeat(4 - enteredCode.length)
-        binding.enteredCode.text = masked
+        binding.enteredCode.text = enteredCode
     }
 
     private fun verifyCode() {

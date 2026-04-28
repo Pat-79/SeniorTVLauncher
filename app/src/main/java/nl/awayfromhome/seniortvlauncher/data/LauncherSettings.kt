@@ -11,6 +11,7 @@ data class LauncherSettings(
     val backgroundBlurLevel: Int = 10,
     val showClock: Boolean = true,
     val showDate: Boolean = true,
+    val clickSoundEnabled: Boolean = true,
     val buttonAssignments: Map<Int, String> = emptyMap()
 )
 
