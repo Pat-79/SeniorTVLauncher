@@ -119,6 +119,7 @@ class SettingsPinDialogFragment : DialogFragment() {
         } else {
             enteredCode = ""
             updateEnteredDisplay()
+            resetTimeout()
             Toast.makeText(requireContext(), getString(R.string.incorrect_code), Toast.LENGTH_SHORT).show()
         }
     }
