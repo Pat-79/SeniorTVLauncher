@@ -1,5 +1,6 @@
 package nl.awayfromhome.seniortvlauncher.ui.launcher
 
+import android.graphics.Rect
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -118,6 +120,10 @@ class LauncherFragment : Fragment() {
         )
         binding.appGrid.layoutManager = GridLayoutManager(requireContext(), 4)
         binding.appGrid.adapter = adapter
+
+        // Add uniform gap around every tile so tiles never touch each other or overlap when focused.
+        val gapPx = resources.getDimensionPixelSize(R.dimen.grid_gap)
+        binding.appGrid.addItemDecoration(GridSpacingDecoration(gapPx))
     }
 
     private val settingsHoldHandler = Handler(Looper.getMainLooper())
@@ -239,12 +245,17 @@ class LauncherFragment : Fragment() {
     private fun updateAdapterSettings(settings: LauncherSettings, apps: List<AppInfo>) {
         val grid = binding.appGrid
         val appMap = apps.associateBy { it.packageName }
+        val gapPx = resources.getDimensionPixelSize(R.dimen.grid_gap)
 
         fun doUpdate() {
             val gridW = grid.width - grid.paddingStart - grid.paddingEnd
             val gridH = grid.height - grid.paddingTop - grid.paddingBottom
             if (gridW > 0 && gridH > 0) {
-                adapter.setCellSize(gridW / settings.columns, gridH / settings.rows)
+                // Each cell has a gapPx decoration on both the left AND right (or top AND bottom),
+                // so the view itself must be narrower/shorter by 2 × gapPx per axis.
+                val cellW = (gridW / settings.columns - 2 * gapPx).coerceAtLeast(1)
+                val cellH = (gridH / settings.rows - 2 * gapPx).coerceAtLeast(1)
+                adapter.setCellSize(cellW, cellH)
             }
             adapter.updateSettings(settings, appMap)
         }
@@ -310,5 +321,14 @@ class LauncherFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    /** Adds a uniform [spacingPx] gap on all four sides of every RecyclerView child. */
+    private class GridSpacingDecoration(private val spacingPx: Int) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(
+            outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
+        ) {
+            outRect.set(spacingPx, spacingPx, spacingPx, spacingPx)
+        }
     }
 }

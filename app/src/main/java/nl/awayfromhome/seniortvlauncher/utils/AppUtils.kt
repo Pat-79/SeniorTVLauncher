@@ -36,8 +36,12 @@ object AppUtils {
 
             val label = resolveInfo.loadLabel(pm).toString()
 
-            // Efficiently load icon
-            val icon = resolveInfo.loadIcon(pm)
+            // Prefer the TV banner (rectangular, higher resolution) when available.
+            // Banners are typically 320×180 and look much better in a TV grid layout.
+            // Fall back to the standard launcher icon when no banner is defined.
+            val icon: Drawable = resolveInfo.activityInfo.loadBanner(pm)
+                ?: resolveInfo.activityInfo.applicationInfo.loadBanner(pm)
+                ?: resolveInfo.loadIcon(pm)
                 ?: ContextCompat.getDrawable(context, R.drawable.ic_add)!!
 
             // Extract dominant color for UI styling

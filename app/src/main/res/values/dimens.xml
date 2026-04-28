@@ -5,4 +5,7 @@
     <dimen name="app_name_text_size">14sp</dimen>
     <dimen name="settings_item_height">64dp</dimen>
     <dimen name="app_name_bottom_padding">4dp</dimen>
+    <!-- Gap (on each side) between app-grid tiles.
+         Total space between two adjacent tiles = 2 × grid_gap. -->
+    <dimen name="grid_gap">8dp</dimen>
 </resources>

@@ -150,10 +150,12 @@ class AppButtonView @JvmOverloads constructor(
 
     fun setFocusedState(focused: Boolean, shape: ButtonShape) {
         isFocused = focused
+        // Scale only the icon container so the tile stays within its allocated cell bounds,
+        // preventing any overlap with neighbouring tiles.
         if (focused) {
-            animate().scaleX(1.12f).scaleY(1.12f).setDuration(150).start()
+            iconContainer.animate().scaleX(1.10f).scaleY(1.10f).setDuration(150).start()
         } else {
-            animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start()
+            iconContainer.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start()
         }
         applyShape(shape, isEmptySlot)
         invalidate()
