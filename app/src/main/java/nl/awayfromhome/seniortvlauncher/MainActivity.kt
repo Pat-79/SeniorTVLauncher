@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, LauncherFragment())
+                .replace(R.id.fragment_container, LauncherFragment(), "launcher_fragment")
                 .commit()
         }
     }
