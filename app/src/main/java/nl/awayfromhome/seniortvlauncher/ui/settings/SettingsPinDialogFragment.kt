@@ -88,6 +88,13 @@ class SettingsPinDialogFragment : DialogFragment() {
                 if (enteredCode.length < 4) {
                     enteredCode += (button.text as CharSequence).toString()
                     updateEnteredDisplay()
+                    // Auto-accept when the 4th digit completes the correct code
+                    if (enteredCode.length == 4 && enteredCode == generatedCode) {
+                        val intent = Intent(requireContext(), SettingsActivity::class.java)
+                        dismiss()
+                        startActivity(intent)
+                    }
+                    // If 4th digit is wrong: do nothing – let the user retry or press OK
                 }
             }
         }
