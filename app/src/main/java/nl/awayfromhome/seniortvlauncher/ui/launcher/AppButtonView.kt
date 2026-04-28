@@ -46,6 +46,10 @@ class AppButtonView @JvmOverloads constructor(
         addIconView.visibility = GONE
         appNameView.text = appInfo.label
         appNameView.visibility = if (showName) VISIBLE else GONE
+        isFocusable = true
+        isClickable = true
+        isEnabled = true
+        alpha = 1f
         applyShape(shape, false)
     }
 
@@ -53,8 +57,12 @@ class AppButtonView @JvmOverloads constructor(
         dominantColor = Color.WHITE
         iconView.setImageDrawable(null)
         iconView.visibility = GONE
-        addIconView.visibility = VISIBLE
+        addIconView.visibility = GONE
         appNameView.visibility = GONE
+        isFocusable = false
+        isClickable = false
+        isEnabled = false
+        alpha = 0f
         applyShape(shape, true)
     }
 
