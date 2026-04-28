@@ -1,5 +1,7 @@
 package nl.awayfromhome.seniortvlauncher.ui.settings
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import nl.awayfromhome.seniortvlauncher.R
 import nl.awayfromhome.seniortvlauncher.databinding.DialogPinBinding
+import nl.awayfromhome.seniortvlauncher.ui.launcher.LauncherFragment
 
 class SettingsPinDialogFragment : DialogFragment() {
 
@@ -110,7 +113,7 @@ class SettingsPinDialogFragment : DialogFragment() {
 
     private fun verifyCode() {
         if (enteredCode == generatedCode) {
-            val intent = android.content.Intent(requireContext(), SettingsActivity::class.java)
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
             dismiss()
             startActivity(intent)
         } else {
@@ -121,12 +124,10 @@ class SettingsPinDialogFragment : DialogFragment() {
         }
     }
 
-    override fun onDismiss(dialog: android.content.DialogInterface) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        val fragment = parentFragmentManager.findFragmentByTag("launcher_fragment")
-        if (fragment is nl.awayfromhome.seniortvlauncher.ui.launcher.LauncherFragment) {
-            fragment.focusFirstTile()
-        }
+        (parentFragmentManager.findFragmentByTag("launcher_fragment") as? LauncherFragment)
+            ?.focusFirstTile()
     }
 
     override fun onDestroyView() {
