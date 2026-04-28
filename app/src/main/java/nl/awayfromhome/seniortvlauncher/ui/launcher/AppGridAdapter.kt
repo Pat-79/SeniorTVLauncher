@@ -62,6 +62,8 @@ class AppGridAdapter(
         buttonView.setOnFocusChangeListener { _, hasFocus ->
             buttonView.setFocusedState(hasFocus, settings.buttonShape)
         }
+
+        buttonView.isFocusable = true
     }
 
     override fun getItemCount(): Int = slots.size

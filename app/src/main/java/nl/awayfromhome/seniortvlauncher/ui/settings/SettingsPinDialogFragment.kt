@@ -89,7 +89,12 @@ class SettingsPinDialogFragment : DialogFragment() {
             }
         }
 
-        binding.btnBackspace.setOnClickListener {
+        binding.btnBack.setOnClickListener {
+            resetTimeout()
+            dismiss()
+        }
+
+        binding.btnDelete.setOnClickListener {
             resetTimeout()
             if (enteredCode.isNotEmpty()) {
                 enteredCode = enteredCode.dropLast(1)
