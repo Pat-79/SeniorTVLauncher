@@ -20,7 +20,7 @@ class SettingsPinDialogFragment : DialogFragment() {
     private var enteredCode: String = ""
 
     private val timeoutHandler = Handler(Looper.getMainLooper())
-    private var remainingSeconds = 10
+    private var remainingSeconds = TIMEOUT_SECONDS
 
     private val countdownRunnable = object : Runnable {
         override fun run() {
@@ -29,7 +29,7 @@ class SettingsPinDialogFragment : DialogFragment() {
                 dismiss()
             } else {
                 updateTimeoutHint()
-                timeoutHandler.postDelayed(this, 1_000)
+                timeoutHandler.postDelayed(this, COUNTDOWN_INTERVAL_MS)
             }
         }
     }
@@ -63,9 +63,9 @@ class SettingsPinDialogFragment : DialogFragment() {
 
     private fun resetTimeout() {
         timeoutHandler.removeCallbacks(countdownRunnable)
-        remainingSeconds = 10
+        remainingSeconds = TIMEOUT_SECONDS
         updateTimeoutHint()
-        timeoutHandler.postDelayed(countdownRunnable, 1_000)
+        timeoutHandler.postDelayed(countdownRunnable, COUNTDOWN_INTERVAL_MS)
     }
 
     private fun updateTimeoutHint() {
@@ -124,5 +124,10 @@ class SettingsPinDialogFragment : DialogFragment() {
         timeoutHandler.removeCallbacks(countdownRunnable)
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TIMEOUT_SECONDS = 10
+        private const val COUNTDOWN_INTERVAL_MS = 1_000L
     }
 }
