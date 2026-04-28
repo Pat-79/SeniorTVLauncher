@@ -31,4 +31,5 @@
     <string name="pin_title">Enter the code shown below to access Settings</string>
     <string name="incorrect_code">Incorrect code</string>
     <string name="cancel">Cancel</string>
+    <string name="timeout_hint">Closes automatically in %1$d seconds</string>
 </resources>
