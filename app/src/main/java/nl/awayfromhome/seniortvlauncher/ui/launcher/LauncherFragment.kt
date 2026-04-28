@@ -3,6 +3,7 @@ package nl.awayfromhome.seniortvlauncher.ui.launcher
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -31,6 +32,7 @@ class LauncherFragment : Fragment() {
 
     private val viewModel: LauncherViewModel by viewModels()
     private lateinit var adapter: AppGridAdapter
+    private var defaultTitle: String = ""
     private val dateHandler = Handler(Looper.getMainLooper())
     private val dateRunnable = object : Runnable {
         override fun run() {
@@ -51,6 +53,9 @@ class LauncherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        defaultTitle = getString(R.string.app_name)
+
+        applyHeaderFrostedEffect()
         setupAdapter()
         setupSettingsButton()
         observeViewModel()
@@ -83,6 +88,12 @@ class LauncherFragment : Fragment() {
         settingsHoldRunnable = null
     }
 
+    private fun applyHeaderFrostedEffect() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            binding.topBar.setBackgroundBlurRadius(20)
+        }
+    }
+
     private fun setupAdapter() {
         adapter = AppGridAdapter(
             onAppClick = { appInfo ->
@@ -90,6 +101,9 @@ class LauncherFragment : Fragment() {
             },
             onEmptySlotClick = { _ ->
                 // Empty slots are handled through settings
+            },
+            onAppFocused = { appInfo ->
+                binding.appTitle.text = appInfo?.label ?: defaultTitle
             }
         )
         binding.appGrid.layoutManager = GridLayoutManager(requireContext(), 4)
@@ -140,6 +154,9 @@ class LauncherFragment : Fragment() {
         }
         binding.settingsButton.setOnFocusChangeListener { _, hasFocus ->
             binding.settingsButton.alpha = if (hasFocus) 1.0f else 0.5f
+            if (hasFocus) {
+                binding.appTitle.text = defaultTitle
+            }
         }
     }
 
