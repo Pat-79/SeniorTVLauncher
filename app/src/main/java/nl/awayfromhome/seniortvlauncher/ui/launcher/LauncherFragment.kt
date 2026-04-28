@@ -127,7 +127,7 @@ class LauncherFragment : Fragment() {
             } else false
         }
         binding.settingsButton.setOnFocusChangeListener { _, hasFocus ->
-            binding.settingsButton.alpha = if (hasFocus) 1.0f else 0.6f
+            binding.settingsButton.alpha = if (hasFocus) 1.0f else 0.5f
         }
     }
 

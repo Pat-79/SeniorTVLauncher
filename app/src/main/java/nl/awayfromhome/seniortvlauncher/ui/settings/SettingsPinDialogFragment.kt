@@ -1,6 +1,8 @@
 package nl.awayfromhome.seniortvlauncher.ui.settings
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,21 @@ class SettingsPinDialogFragment : DialogFragment() {
 
     private var generatedCode: String = ""
     private var enteredCode: String = ""
+
+    private val timeoutHandler = Handler(Looper.getMainLooper())
+    private var remainingSeconds = TIMEOUT_SECONDS
+
+    private val countdownRunnable = object : Runnable {
+        override fun run() {
+            remainingSeconds--
+            if (remainingSeconds <= 0) {
+                dismiss()
+            } else {
+                updateTimeoutHint()
+                timeoutHandler.postDelayed(this, COUNTDOWN_INTERVAL_MS)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +56,20 @@ class SettingsPinDialogFragment : DialogFragment() {
         binding.enteredCode.text = ""
 
         setupNumPad()
+
+        binding.btn1.requestFocus()
+        resetTimeout()
+    }
+
+    private fun resetTimeout() {
+        timeoutHandler.removeCallbacks(countdownRunnable)
+        remainingSeconds = TIMEOUT_SECONDS
+        updateTimeoutHint()
+        timeoutHandler.postDelayed(countdownRunnable, COUNTDOWN_INTERVAL_MS)
+    }
+
+    private fun updateTimeoutHint() {
+        _binding?.timeoutHint?.text = getString(R.string.timeout_hint, remainingSeconds)
     }
 
     private fun setupNumPad() {
@@ -50,6 +81,7 @@ class SettingsPinDialogFragment : DialogFragment() {
 
         numButtons.forEachIndexed { _, button ->
             button.setOnClickListener {
+                resetTimeout()
                 if (enteredCode.length < 4) {
                     enteredCode += (button.text as CharSequence).toString()
                     updateEnteredDisplay()
@@ -58,6 +90,7 @@ class SettingsPinDialogFragment : DialogFragment() {
         }
 
         binding.btnBackspace.setOnClickListener {
+            resetTimeout()
             if (enteredCode.isNotEmpty()) {
                 enteredCode = enteredCode.dropLast(1)
                 updateEnteredDisplay()
@@ -65,6 +98,7 @@ class SettingsPinDialogFragment : DialogFragment() {
         }
 
         binding.btnConfirm.setOnClickListener {
+            resetTimeout()
             verifyCode()
         }
     }
@@ -87,7 +121,13 @@ class SettingsPinDialogFragment : DialogFragment() {
     }
 
     override fun onDestroyView() {
+        timeoutHandler.removeCallbacks(countdownRunnable)
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TIMEOUT_SECONDS = 10
+        private const val COUNTDOWN_INTERVAL_MS = 1_000L
     }
 }
