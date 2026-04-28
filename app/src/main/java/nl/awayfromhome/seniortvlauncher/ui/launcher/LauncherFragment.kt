@@ -3,7 +3,6 @@ package nl.awayfromhome.seniortvlauncher.ui.launcher
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -55,7 +54,6 @@ class LauncherFragment : Fragment() {
 
         defaultTitle = getString(R.string.app_name)
 
-        applyHeaderFrostedEffect()
         setupAdapter()
         setupSettingsButton()
         observeViewModel()
@@ -86,12 +84,6 @@ class LauncherFragment : Fragment() {
         dateHandler.removeCallbacks(dateRunnable)
         settingsHoldRunnable?.let { settingsHoldHandler.removeCallbacks(it) }
         settingsHoldRunnable = null
-    }
-
-    private fun applyHeaderFrostedEffect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            binding.topBar.setBackgroundBlurRadius(20)
-        }
     }
 
     private fun setupAdapter() {
