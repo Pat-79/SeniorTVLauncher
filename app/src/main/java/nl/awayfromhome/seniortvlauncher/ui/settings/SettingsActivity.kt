@@ -171,6 +171,11 @@ class SettingsActivity : AppCompatActivity(), AppPickerDialogFragment.AppPickerL
         binding.switchShowDate.setOnCheckedChangeListener { _, checked ->
             viewModel.updateSettings(viewModel.getCurrentSettings().copy(showDate = checked))
         }
+
+        binding.switchClickSound.isChecked = s.clickSoundEnabled
+        binding.switchClickSound.setOnCheckedChangeListener { _, checked ->
+            viewModel.updateSettings(viewModel.getCurrentSettings().copy(clickSoundEnabled = checked))
+        }
     }
 
     private fun refreshAppSlots() {
@@ -270,6 +275,9 @@ class SettingsActivity : AppCompatActivity(), AppPickerDialogFragment.AppPickerL
     }
 
     private fun setupSaveButton() {
+        binding.btnOpenDeviceSettings.setOnClickListener {
+            startActivity(Intent("android.settings.SETTINGS"))
+        }
         binding.btnSave.setOnClickListener {
             viewModel.saveSettings()
             Toast.makeText(this, getString(R.string.settings_saved), Toast.LENGTH_SHORT).show()

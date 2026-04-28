@@ -32,4 +32,6 @@
     <string name="incorrect_code">Incorrect code</string>
     <string name="cancel">Cancel</string>
     <string name="timeout_hint">Closes automatically in %1$d seconds</string>
+    <string name="click_sound">Click sound on tile focus</string>
+    <string name="open_device_settings">Open device settings</string>
 </resources>

@@ -37,6 +37,7 @@ class SettingsRepository(context: Context) {
             backgroundBlurLevel = prefs.getInt(KEY_BACKGROUND_BLUR_LEVEL, 10),
             showClock = prefs.getBoolean(KEY_SHOW_CLOCK, true),
             showDate = prefs.getBoolean(KEY_SHOW_DATE, true),
+            clickSoundEnabled = prefs.getBoolean(KEY_CLICK_SOUND_ENABLED, true),
             buttonAssignments = buttonAssignments
         )
     }
@@ -58,6 +59,7 @@ class SettingsRepository(context: Context) {
             .putInt(KEY_BACKGROUND_BLUR_LEVEL, settings.backgroundBlurLevel)
             .putBoolean(KEY_SHOW_CLOCK, settings.showClock)
             .putBoolean(KEY_SHOW_DATE, settings.showDate)
+            .putBoolean(KEY_CLICK_SOUND_ENABLED, settings.clickSoundEnabled)
             .putString(KEY_BUTTON_ASSIGNMENTS, json.toString())
             .apply()
     }
@@ -82,6 +84,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_BACKGROUND_BLUR_LEVEL = "background_blur_level"
         private const val KEY_SHOW_CLOCK = "show_clock"
         private const val KEY_SHOW_DATE = "show_date"
+        private const val KEY_CLICK_SOUND_ENABLED = "click_sound_enabled"
         private const val KEY_BUTTON_ASSIGNMENTS = "button_assignments"
     }
 }

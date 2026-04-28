@@ -32,6 +32,8 @@ class LauncherFragment : Fragment() {
     private val viewModel: LauncherViewModel by viewModels()
     private lateinit var adapter: AppGridAdapter
     private var defaultTitle: String = ""
+    private var lastFocusedAdapterPosition: Int = 0
+    private var holdTriggered: Boolean = false
     private val dateHandler = Handler(Looper.getMainLooper())
     private val dateRunnable = object : Runnable {
         override fun run() {
@@ -57,6 +59,16 @@ class LauncherFragment : Fragment() {
         setupAdapter()
         setupSettingsButton()
         observeViewModel()
+    }
+
+    fun focusLastTile() {
+        val grid = _binding?.appGrid ?: return
+        val viewHolder = grid.findViewHolderForAdapterPosition(lastFocusedAdapterPosition)
+        if (viewHolder != null && viewHolder.itemView.isFocusable && viewHolder.itemView.isEnabled) {
+            viewHolder.itemView.requestFocus()
+        } else {
+            focusFirstTile()
+        }
     }
 
     fun focusFirstTile() {
@@ -96,6 +108,9 @@ class LauncherFragment : Fragment() {
             },
             onAppFocused = { appInfo ->
                 binding.appTitle.text = appInfo?.label ?: defaultTitle
+            },
+            onAppFocusedPosition = { position ->
+                lastFocusedAdapterPosition = position
             }
         )
         binding.appGrid.layoutManager = GridLayoutManager(requireContext(), 4)
@@ -106,10 +121,19 @@ class LauncherFragment : Fragment() {
     private var settingsHoldRunnable: Runnable? = null
 
     private fun setupSettingsButton() {
+        binding.settingsButton.setOnClickListener {
+            if (!holdTriggered) {
+                focusLastTile()
+            }
+        }
         binding.settingsButton.setOnTouchListener { _, event ->
             when (event.action) {
                 android.view.MotionEvent.ACTION_DOWN -> {
-                    settingsHoldRunnable = Runnable { showPinDialog() }
+                    holdTriggered = false
+                    settingsHoldRunnable = Runnable {
+                        holdTriggered = true
+                        showPinDialog()
+                    }
                     settingsHoldHandler.postDelayed(settingsHoldRunnable!!, 3000)
                     true
                 }
@@ -130,7 +154,11 @@ class LauncherFragment : Fragment() {
                 when (event.action) {
                     android.view.KeyEvent.ACTION_DOWN -> {
                         if (event.repeatCount == 0) {
-                            settingsHoldRunnable = Runnable { showPinDialog() }
+                            holdTriggered = false
+                            settingsHoldRunnable = Runnable {
+                                holdTriggered = true
+                                showPinDialog()
+                            }
                             settingsHoldHandler.postDelayed(settingsHoldRunnable!!, 3000)
                         }
                         true
@@ -138,6 +166,7 @@ class LauncherFragment : Fragment() {
                     android.view.KeyEvent.ACTION_UP -> {
                         settingsHoldRunnable?.let { settingsHoldHandler.removeCallbacks(it) }
                         settingsHoldRunnable = null
+                        binding.settingsButton.performClick()
                         true
                     }
                     else -> false
