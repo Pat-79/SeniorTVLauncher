@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/settings_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_title"
+            android:textSize="32sp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="24dp" />
+
+        <!-- DISPLAY SECTION -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/section_display"
+            android:textSize="20sp"
+            android:textColor="@color/accent"
+            android:paddingBottom="8dp" />
+
+        <!-- Rows -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/rows"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <Button
+                android:id="@+id/btn_rows_minus"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="-"
+                android:textSize="20sp"
+                android:focusable="true"
+                android:background="@color/button_background" />
+            <TextView
+                android:id="@+id/rows_value"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:text="3" />
+            <Button
+                android:id="@+id/btn_rows_plus"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="+"
+                android:textSize="20sp"
+                android:focusable="true"
+                android:background="@color/button_background" />
+        </LinearLayout>
+
+        <!-- Columns -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/columns"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <Button
+                android:id="@+id/btn_columns_minus"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="-"
+                android:textSize="20sp"
+                android:focusable="true"
+                android:background="@color/button_background" />
+            <TextView
+                android:id="@+id/columns_value"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:text="4" />
+            <Button
+                android:id="@+id/btn_columns_plus"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="+"
+                android:textSize="20sp"
+                android:focusable="true"
+                android:background="@color/button_background" />
+        </LinearLayout>
+
+        <!-- Button size -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/button_size"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <SeekBar
+                android:id="@+id/button_size_seekbar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:max="120"
+                android:focusable="true" />
+            <TextView
+                android:id="@+id/button_size_label"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:text="120dp" />
+        </LinearLayout>
+
+        <!-- Show app name -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/show_app_name"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <Switch
+                android:id="@+id/switch_show_app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <!-- Button shape -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/button_shape"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <RadioGroup
+                android:id="@+id/radio_group_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/radio_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shape_circle"
+                    android:textColor="@color/text_primary"
+                    android:focusable="true" />
+                <RadioButton
+                    android:id="@+id/radio_rounded_square"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shape_rounded_square"
+                    android:textColor="@color/text_primary"
+                    android:focusable="true"
+                    android:layout_marginStart="8dp" />
+                <RadioButton
+                    android:id="@+id/radio_square"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shape_square"
+                    android:textColor="@color/text_primary"
+                    android:focusable="true"
+                    android:layout_marginStart="8dp" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- BACKGROUND SECTION -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/section_background"
+            android:textSize="20sp"
+            android:textColor="@color/accent"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <Button
+            android:id="@+id/btn_set_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:text="@string/set_background_image"
+            android:textColor="@color/text_primary"
+            android:background="@color/button_background"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/btn_remove_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:text="@string/remove_background"
+            android:textColor="@color/text_primary"
+            android:background="@color/button_background"
+            android:focusable="true"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/enable_blur"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <Switch
+                android:id="@+id/switch_enable_blur"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/blur_level"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <SeekBar
+                android:id="@+id/blur_level_seekbar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:max="25"
+                android:focusable="true" />
+            <TextView
+                android:id="@+id/blur_level_label"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:text="10" />
+        </LinearLayout>
+
+        <!-- CLOCK & DATE SECTION -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/section_clock_date"
+            android:textSize="20sp"
+            android:textColor="@color/accent"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/show_clock"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <Switch
+                android:id="@+id/switch_show_clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/show_date"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+            <Switch
+                android:id="@+id/switch_show_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <!-- APP BUTTONS SECTION -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/section_app_buttons"
+            android:textSize="20sp"
+            android:textColor="@color/accent"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/app_slots_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <!-- SAVE BUTTON -->
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="@string/save_changes"
+            android:textSize="20sp"
+            android:textColor="@color/text_primary"
+            android:background="@color/accent"
+            android:focusable="true"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp" />
+
+    </LinearLayout>
+</ScrollView>
