@@ -112,11 +112,21 @@ class AppButtonView @JvmOverloads constructor(
     }
 
     companion object {
-        /** Thin, subtle stroke shown on unfocused tiles – not bright. */
+        /** Thin, barely-there stroke shown on unfocused tiles – just a colour hint. */
         private const val STROKE_WIDTH_UNFOCUSED = 2
         /** Maximum icon-container scale when the tile is fully focused. */
         private const val MAX_ICON_SCALE = 1.05f
         private const val ANIM_DURATION_MS = 150L
+
+        // Focused fill: lightened and fully-opaque background for strong contrast.
+        private const val FOCUSED_LIGHTEN_AMOUNT = 40
+        private const val FOCUSED_FILL_ALPHA = 190
+        // Unfocused fill/stroke: near-invisible colour hints so the tile barely registers.
+        private const val UNFOCUSED_FILL_ALPHA = 22
+        private const val UNFOCUSED_STROKE_ALPHA = 18
+        // Focused glow: very bright bloom that clearly separates the selected tile.
+        private const val FOCUSED_GLOW_INNER_ALPHA = 230
+        private const val FOCUSED_GLOW_OUTER_ALPHA = 130
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -126,8 +136,8 @@ class AppButtonView @JvmOverloads constructor(
             val expandedHalfW = tileCx + overflow
             val expandedHalfH = tileCy + overflow
             val radius = sqrt(expandedHalfW * expandedHalfW + expandedHalfH * expandedHalfH)
-            val innerGlowAlpha = (160 * glowProgress).toInt()
-            val outerGlowAlpha = (70 * glowProgress).toInt()
+            val innerGlowAlpha = (FOCUSED_GLOW_INNER_ALPHA * glowProgress).toInt()
+            val outerGlowAlpha = (FOCUSED_GLOW_OUTER_ALPHA * glowProgress).toInt()
             val shader = RadialGradient(
                 tileCx, tileCy, radius,
                 intArrayOf(
@@ -150,16 +160,16 @@ class AppButtonView @JvmOverloads constructor(
         val background = GradientDrawable()
         val fillColor = when {
             isEmpty -> Color.argb(40, 255, 255, 255)
-            isFocused -> ColorUtils.withAlpha(lightenColor(dominantColor, 30), 110)
-            // Increased alpha (70 vs 40) so the app's colour fills more of the tile area.
-            else -> ColorUtils.withAlpha(dominantColor, 70)
+            isFocused -> ColorUtils.withAlpha(lightenColor(dominantColor, FOCUSED_LIGHTEN_AMOUNT), FOCUSED_FILL_ALPHA)
+            // Very faint hint of the app's colour when unfocused – almost imperceptible.
+            else -> ColorUtils.withAlpha(dominantColor, UNFOCUSED_FILL_ALPHA)
         }
         // When focused: no stroke – the radial glow provides the visual boundary.
-        // When unfocused: very subtle stroke (muted, low-alpha) rather than the full accent.
+        // When unfocused: barely-there stroke so tiles have the slightest colour hint.
         val strokeColor = when {
             isEmpty -> Color.argb(80, 255, 255, 255)
             isFocused -> Color.TRANSPARENT
-            else -> ColorUtils.withAlpha(dominantColor, 55)
+            else -> ColorUtils.withAlpha(dominantColor, UNFOCUSED_STROKE_ALPHA)
         }
         val strokeWidth = if (isFocused || isEmpty) 0 else STROKE_WIDTH_UNFOCUSED
 
