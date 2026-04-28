@@ -2,24 +2,28 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <!--
+        icon_container fills the full cell height minus the optional app-name label.
+        When app_name is GONE it expands to fill the entire cell (ConstraintLayout
+        treats a GONE view as having 0 dimensions, so the bottom barrier collapses).
+    -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/icon_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:minWidth="80dp"
-        android:minHeight="80dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/app_name">
 
         <ImageView
             android:id="@+id/app_icon"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:scaleType="fitCenter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -28,8 +32,8 @@
 
         <ImageView
             android:id="@+id/add_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:src="@drawable/ic_add"
             android:alpha="0.4"
             android:scaleType="fitCenter"
@@ -43,15 +47,16 @@
 
     <TextView
         android:id="@+id/app_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/text_primary"
         android:textSize="@dimen/app_name_text_size"
         android:maxLines="1"
         android:ellipsize="end"
-        android:layout_marginTop="4dp"
+        android:paddingBottom="@dimen/app_name_bottom_padding"
         app:layout_constraintTop_toBottomOf="@id/icon_container"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

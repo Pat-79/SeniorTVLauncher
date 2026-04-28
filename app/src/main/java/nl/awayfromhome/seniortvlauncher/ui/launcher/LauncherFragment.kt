@@ -3,6 +3,7 @@ package nl.awayfromhome.seniortvlauncher.ui.launcher
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,6 +18,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import nl.awayfromhome.seniortvlauncher.R
 import androidx.core.content.ContextCompat
+import nl.awayfromhome.seniortvlauncher.data.AppInfo
 import nl.awayfromhome.seniortvlauncher.data.LauncherSettings
 import nl.awayfromhome.seniortvlauncher.databinding.FragmentLauncherBinding
 import nl.awayfromhome.seniortvlauncher.ui.settings.SettingsPinDialogFragment
@@ -58,6 +60,7 @@ class LauncherFragment : Fragment() {
 
         setupAdapter()
         setupSettingsButton()
+        applyHeaderBlurStrip()
         observeViewModel()
     }
 
@@ -197,8 +200,7 @@ class LauncherFragment : Fragment() {
 
         viewModel.allApps.observe(viewLifecycleOwner) { apps ->
             val currentSettings = viewModel.settings.value ?: return@observe
-            val appMap = apps.associateBy { it.packageName }
-            adapter.updateSettings(currentSettings, appMap)
+            updateAdapterSettings(currentSettings, apps)
             binding.appGrid.post { focusFirstTile() }
         }
     }
@@ -220,14 +222,50 @@ class LauncherFragment : Fragment() {
             binding.appGrid.layoutManager = GridLayoutManager(requireContext(), columns)
         }
 
-        // Update adapter
+        // Update adapter with cell-size-aware dimensions
         val apps = viewModel.allApps.value ?: emptyList()
-        val appMap = apps.associateBy { it.packageName }
-        adapter.updateSettings(settings, appMap)
+        updateAdapterSettings(settings, apps)
         binding.appGrid.post { focusFirstTile() }
 
         // Background
         loadBackground(settings)
+    }
+
+    /**
+     * Computes the maximum rectangle cell size from the current grid dimensions and the
+     * given settings (rows × columns), then updates the adapter. If the grid has not yet
+     * been measured, defers the update via [View.post].
+     */
+    private fun updateAdapterSettings(settings: LauncherSettings, apps: List<AppInfo>) {
+        val grid = binding.appGrid
+        val appMap = apps.associateBy { it.packageName }
+
+        fun doUpdate() {
+            val gridW = grid.width - grid.paddingStart - grid.paddingEnd
+            val gridH = grid.height - grid.paddingTop - grid.paddingBottom
+            if (gridW > 0 && gridH > 0) {
+                adapter.setCellSize(gridW / settings.columns, gridH / settings.rows)
+            }
+            adapter.updateSettings(settings, appMap)
+        }
+
+        if (grid.width > 0 && grid.height > 0) doUpdate()
+        else grid.post { doUpdate() }
+    }
+
+    /**
+     * Applies a persistent frosted-glass gradient strip immediately below the header bar.
+     * On API 31+ (Android 12), an additional RenderEffect blur is applied to the strip
+     * so the gradient edge itself appears soft rather than sharp.
+     */
+    private fun applyHeaderBlurStrip() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            binding.headerBlurStrip.setRenderEffect(
+                android.graphics.RenderEffect.createBlurEffect(
+                    35f, 35f, android.graphics.Shader.TileMode.CLAMP
+                )
+            )
+        }
     }
 
     private fun updateDate() {
