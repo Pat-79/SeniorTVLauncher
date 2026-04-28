@@ -66,7 +66,10 @@ class AppGridAdapter(
             buttonView.setFocusedState(hasFocus, settings.buttonShape)
             if (hasFocus && appInfo != null) {
                 onAppFocused?.invoke(appInfo)
-                onAppFocusedPosition?.invoke(holder.adapterPosition)
+                val pos = holder.adapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onAppFocusedPosition?.invoke(pos)
+                }
                 if (settings.clickSoundEnabled) {
                     buttonView.playSoundEffect(SoundEffectConstants.CLICK)
                 }

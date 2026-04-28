@@ -3,6 +3,7 @@ package nl.awayfromhome.seniortvlauncher.ui.settings
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -276,7 +277,7 @@ class SettingsActivity : AppCompatActivity(), AppPickerDialogFragment.AppPickerL
 
     private fun setupSaveButton() {
         binding.btnOpenDeviceSettings.setOnClickListener {
-            startActivity(Intent("android.settings.SETTINGS"))
+            startActivity(Intent(Settings.ACTION_SETTINGS))
         }
         binding.btnSave.setOnClickListener {
             viewModel.saveSettings()

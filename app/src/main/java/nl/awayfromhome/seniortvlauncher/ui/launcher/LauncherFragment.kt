@@ -122,9 +122,7 @@ class LauncherFragment : Fragment() {
 
     private fun setupSettingsButton() {
         binding.settingsButton.setOnClickListener {
-            if (!holdTriggered) {
-                focusLastTile()
-            }
+            focusLastTile()
         }
         binding.settingsButton.setOnTouchListener { _, event ->
             when (event.action) {
@@ -141,7 +139,10 @@ class LauncherFragment : Fragment() {
                 android.view.MotionEvent.ACTION_CANCEL -> {
                     settingsHoldRunnable?.let { settingsHoldHandler.removeCallbacks(it) }
                     settingsHoldRunnable = null
-                    binding.settingsButton.performClick()
+                    if (!holdTriggered) {
+                        binding.settingsButton.performClick()
+                    }
+                    holdTriggered = false
                     true
                 }
                 else -> false
@@ -166,7 +167,10 @@ class LauncherFragment : Fragment() {
                     android.view.KeyEvent.ACTION_UP -> {
                         settingsHoldRunnable?.let { settingsHoldHandler.removeCallbacks(it) }
                         settingsHoldRunnable = null
-                        binding.settingsButton.performClick()
+                        if (!holdTriggered) {
+                            binding.settingsButton.performClick()
+                        }
+                        holdTriggered = false
                         true
                     }
                     else -> false

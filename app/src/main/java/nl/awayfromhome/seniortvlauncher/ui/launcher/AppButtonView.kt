@@ -17,6 +17,7 @@ import nl.awayfromhome.seniortvlauncher.R
 import nl.awayfromhome.seniortvlauncher.data.AppInfo
 import nl.awayfromhome.seniortvlauncher.data.ButtonShape
 import nl.awayfromhome.seniortvlauncher.utils.ColorUtils
+import kotlin.math.sqrt
 
 class AppButtonView @JvmOverloads constructor(
     context: Context,
@@ -85,7 +86,7 @@ class AppButtonView @JvmOverloads constructor(
         if (isFocused && !isEmptySlot && width > 0 && height > 0) {
             val cx = width / 2f
             val cy = height / 2f
-            val radius = (width.coerceAtLeast(height)) / 2f
+            val radius = sqrt((cx * cx) + (cy * cy))
             val shader = RadialGradient(
                 cx, cy, radius,
                 intArrayOf(
