@@ -3,6 +3,7 @@ package nl.awayfromhome.seniortvlauncher.ui.launcher
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -66,21 +67,26 @@ class AppButtonView @JvmOverloads constructor(
         applyShape(shape, true)
     }
 
+    companion object {
+        private const val STROKE_WIDTH_FOCUSED = 8
+        private const val STROKE_WIDTH_DEFAULT = 3
+    }
+
     private fun applyShape(shape: ButtonShape, isEmpty: Boolean) {
         val background = GradientDrawable()
-        val fillColor = if (isEmpty) {
-            Color.argb(40, 255, 255, 255)
-        } else {
-            ColorUtils.withAlpha(dominantColor, 40)
+        val fillColor = when {
+            isEmpty -> Color.argb(40, 255, 255, 255)
+            isFocused -> ColorUtils.withAlpha(lightenColor(dominantColor, 30), 110)
+            else -> ColorUtils.withAlpha(dominantColor, 40)
         }
-        val strokeColor = if (isEmpty) {
-            Color.argb(80, 255, 255, 255)
-        } else {
-            dominantColor
+        val strokeColor = when {
+            isEmpty -> Color.argb(80, 255, 255, 255)
+            isFocused -> lightenColor(dominantColor, 80)
+            else -> dominantColor
         }
 
         background.setColor(fillColor)
-        background.setStroke(if (isFocused) 6 else 3, strokeColor)
+        background.setStroke(if (isFocused) STROKE_WIDTH_FOCUSED else STROKE_WIDTH_DEFAULT, strokeColor)
 
         when (shape) {
             ButtonShape.CIRCLE -> background.shape = GradientDrawable.OVAL
@@ -95,17 +101,26 @@ class AppButtonView @JvmOverloads constructor(
         }
 
         iconContainer.background = background
-        if (isFocused) {
-            iconContainer.elevation = 16f * resources.displayMetrics.density
-        } else {
-            iconContainer.elevation = 4f * resources.displayMetrics.density
+        iconContainer.elevation = (if (isFocused) 24f else 4f) * resources.displayMetrics.density
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val shadowColor = if (isFocused && !isEmpty) dominantColor else Color.BLACK
+            iconContainer.outlineAmbientShadowColor = shadowColor
+            iconContainer.outlineSpotShadowColor = shadowColor
         }
+    }
+
+    private fun lightenColor(color: Int, amount: Int): Int {
+        val r = (Color.red(color) + amount).coerceAtMost(255)
+        val g = (Color.green(color) + amount).coerceAtMost(255)
+        val b = (Color.blue(color) + amount).coerceAtMost(255)
+        return Color.argb(255, r, g, b)
     }
 
     fun setFocusedState(focused: Boolean, shape: ButtonShape) {
         isFocused = focused
         if (focused) {
-            animate().scaleX(1.1f).scaleY(1.1f).setDuration(150).start()
+            animate().scaleX(1.12f).scaleY(1.12f).setDuration(150).start()
         } else {
             animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start()
         }

@@ -9,7 +9,8 @@ import nl.awayfromhome.seniortvlauncher.data.LauncherSettings
 
 class AppGridAdapter(
     private val onAppClick: (AppInfo) -> Unit,
-    private val onEmptySlotClick: (Int) -> Unit
+    private val onEmptySlotClick: (Int) -> Unit,
+    private val onAppFocused: ((AppInfo?) -> Unit)? = null
 ) : RecyclerView.Adapter<AppGridAdapter.AppButtonViewHolder>() {
 
     private var settings: LauncherSettings = LauncherSettings()
@@ -61,6 +62,11 @@ class AppGridAdapter(
 
         buttonView.setOnFocusChangeListener { _, hasFocus ->
             buttonView.setFocusedState(hasFocus, settings.buttonShape)
+            if (hasFocus && appInfo != null) {
+                onAppFocused?.invoke(appInfo)
+            } else {
+                onAppFocused?.invoke(null)
+            }
         }
     }
 
