@@ -56,12 +56,24 @@ class LauncherFragment : Fragment() {
         observeViewModel()
     }
 
+    fun focusFirstTile() {
+        val grid = _binding?.appGrid ?: return
+        for (i in 0 until grid.childCount) {
+            val child = grid.getChildAt(i)
+            if (child != null && child.isFocusable && child.isEnabled) {
+                child.requestFocus()
+                return
+            }
+        }
+        _binding?.settingsButton?.requestFocus()
+    }
+
     override fun onResume() {
         super.onResume()
         dateHandler.post(dateRunnable)
         viewModel.reloadSettings()
         viewModel.loadApps()
-        binding.appGrid.post { binding.appGrid.getChildAt(0)?.requestFocus() }
+        binding.appGrid.post { focusFirstTile() }
     }
 
     override fun onPause() {
@@ -145,7 +157,7 @@ class LauncherFragment : Fragment() {
             val currentSettings = viewModel.settings.value ?: return@observe
             val appMap = apps.associateBy { it.packageName }
             adapter.updateSettings(currentSettings, appMap)
-            binding.appGrid.post { binding.appGrid.getChildAt(0)?.requestFocus() }
+            binding.appGrid.post { focusFirstTile() }
         }
     }
 
@@ -170,7 +182,7 @@ class LauncherFragment : Fragment() {
         val apps = viewModel.allApps.value ?: emptyList()
         val appMap = apps.associateBy { it.packageName }
         adapter.updateSettings(settings, appMap)
-        binding.appGrid.post { binding.appGrid.getChildAt(0)?.requestFocus() }
+        binding.appGrid.post { focusFirstTile() }
 
         // Background
         loadBackground(settings)
